@@ -18,9 +18,9 @@ t/trig.t
 t/type.t
 
 Long/Long.pm
+Long/Long.xs
 Long/Makefile.PL
 
-Long/t/aab_basic.t
 Long/t/abs_arg.t
 Long/t/arith.t
 Long/t/bool.t

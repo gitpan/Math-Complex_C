@@ -1,2 +1,6 @@
+0.02
+ - Remove Long/t/aab_basic.t. (Served no additional purpose.)
+ - CPAN release of 0.01 was broken.
+
 0.01
  - First release.

@@ -31,7 +31,7 @@ use overload
     'cos'   => \&_overload_cos,
     'atan2' => \&_overload_atan2;
 
-$Math::Complex_C::Long::VERSION = '0.01';
+$Math::Complex_C::Long::VERSION = '0.02';
 
 DynaLoader::bootstrap Math::Complex_C::Long $Math::Complex_C::Long::VERSION;
 
