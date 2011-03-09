@@ -1,6 +1,14 @@
+0.03
+ - Fix assign_cl - internally it was assigning a double instead of a long double.
+ - Skip (rather than fail) tests that are known to be failing because
+   of compiler bugs.
+ - Change _overload_equiv to cater for comparison with real numbers, as
+   well as complex numbers.
+ - Move the files in Long/t to top-level t folder, and delete Long/t.
+
 0.02
  - Remove Long/t/aab_basic.t. (Served no additional purpose.)
- - CPAN release of 0.01 was broken.
+ - Add Long/Long.xs to MANIFEST.
 
 0.01
  - First release.

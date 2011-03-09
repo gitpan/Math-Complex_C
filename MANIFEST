@@ -6,14 +6,24 @@ MANIFEST
 README
 t/aab_basic.t
 t/abs_arg.t
+t/absl_argl.t
 t/arith.t
+t/arithl.t
 t/bool.t
+t/booll.t
 t/conj_proj.t
+t/conjl_projl.t
 t/exp.t
+t/expl.t
 t/nan_inf.t
+t/nanl_infl.t
 t/new.t
+t/newl.t
 t/pow.t
+t/powl.t
 t/signed_zero.t
+t/signed_zero.t
+t/trig.t
 t/trig.t
 t/type.t
 
@@ -21,14 +31,3 @@ Long/Long.pm
 Long/Long.xs
 Long/Makefile.PL
 
-Long/t/abs_arg.t
-Long/t/arith.t
-Long/t/bool.t
-Long/t/conj_proj.t
-Long/t/exp.t
-Long/t/nan_inf.t
-Long/t/new.t
-Long/t/pow.t
-Long/t/signed_zero.t
-Long/t/trig.t
-Long/t/type.t

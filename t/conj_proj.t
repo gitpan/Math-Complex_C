@@ -25,13 +25,24 @@ else {
 
 proj_c($rop, $op);
 
+# For some versions of glibc (pre 2.12.0), cproj will incorrectly
+# return (0.165448249326664 -0.219315121200462)
+
 if(approx(real_c($rop), 4.3, $eps)) {print "ok 3\n"}
+elsif(approx(real_c($rop), 0.165448249326664, $eps) &&
+      approx(imag_c($rop), -0.219315121200462, $eps)) {
+  warn "\nSkipping tests 3 & 4 - your glibc contains a bug that breaks cproj()\n",
+       "Updating your glibc to version 2.12.0 or later should fix the problem\n";
+  print "ok 3\n";
+}
 else {
   warn "3: \$rop: $rop\n";
   print "not ok 3\n";
 }
 
 if(approx(imag_c($rop), -5.7, $eps)) {print "ok 4\n"}
+elsif(approx(real_c($rop), 0.165448249326664, $eps) &&
+      approx(imag_c($rop), -0.219315121200462, $eps)) {print "ok 4\n"}
 else {
   warn "4: \$rop: $rop\n";
   print "not ok 4\n";

@@ -3,7 +3,7 @@ use strict;
 use Config;
 use Math::Complex_C qw(:all);
 
-print "1..5\n";
+print "1..10\n";
 
 my $s_nv = Math::Complex_C::_nvsize();
 my $s_iv = Math::Complex_C::_ivsize();
@@ -87,6 +87,47 @@ else {
   warn "Skipping test 5 for this configuration of perl\n";
   print "ok 5\n";  
 }
+
+my $cl_type = Math::Complex_C::Long::_complex_type();
+
+if($cl_type eq 'long double _Complex') {print "ok 6\n"}
+else {
+  warn "\$c_type: $c_type\n";
+  print "not ok 6\n";
+}
+
+my $dl_type = Math::Complex_C::Long::_double_type();
+
+if($dl_type eq "long double") {print "ok 7\n"}
+else {
+  warn "\$d_type: $d_type\n";
+  print "not ok 7\n";
+}
+
+my $p_type = Math::Complex_C::_which_package($cc);
+
+if($p_type eq "Math::Complex_C") {print "ok 8\n"}
+else {
+  warn "\$p_type: $p_type\n";
+  print "not ok 8\n";
+}
+
+$p_type = Math::Complex_C::_which_package($ccl);
+
+if($p_type eq "Math::Complex_C::Long") {print "ok 9\n"}
+else {
+  warn "\$p_type: $p_type\n";
+  print "not ok 9\n";
+}
+
+$p_type = Math::Complex_C::_which_package($dl_type);
+
+if($p_type eq "Not an object") {print "ok 10\n"}
+else {
+  warn "\$p_type: $p_type\n";
+  print "not ok 10\n";
+}
+
 __END__
 my $s_nv = Math::Complex_C::_nvsize();
 my $s_iv = Math::Complex_C::_ivsize();

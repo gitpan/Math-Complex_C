@@ -44,9 +44,9 @@ int _is_inf(long double x) {
     return 1;
 }
 
-double _get_nan() {
-    double _Complex c;
-    double nan, inf;
+long double _get_nan() {
+    long double _Complex c;
+    long double nan, inf;
     __real__ c = 1.0;
     __imag__ c = 0.0;
 
@@ -55,9 +55,9 @@ double _get_nan() {
     return nan;       
 }
 
-double _get_inf() {
-    double _Complex c;
-    double inf;
+long double _get_inf() {
+    long double _Complex c;
+    long double inf;
     __real__ c = 1.0;
     __imag__ c = 0.0;
 
@@ -86,7 +86,7 @@ SV * create_cl() {
 }
 
 void assign_cl(SV * rop, SV * d1, SV * d2) {
-     double _d1, _d2;
+     long double _d1, _d2;
 
      _d1 = SvNV(d1);
      _d2 = SvNV(d2);
@@ -273,17 +273,38 @@ SV * _overload_not(SV * rop, SV * second, SV * third) {
 }
 
 SV * _overload_equiv(SV * a, SV * b, SV * third) {
-     if(creal(*(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(a))))) == creal(*(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(b))))) &&
-        cimag(*(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(a))))) == cimag(*(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(b))))))
-          return newSVuv(1);
-     return newSVuv(0);
+     if(SvUOK(b) || SvIOK(b) || SvNOK(b)) {
+       if(SvNV(b) == creal(*(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(a))))) &&
+          0       == cimag(*(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(a)))))) return newSVuv(1);
+       return newSVuv(0);
+     }
+     if(sv_isobject(b)) {
+       if(strEQ(HvNAME(SvSTASH(SvRV(b))), "Math::Complex_C::Long")) {
+         if(creal(*(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(a))))) == creal(*(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(b))))) &&
+            cimag(*(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(a))))) == cimag(*(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(b))))))
+              return newSVuv(1);
+         return newSVuv(0);
+       }
+     }
+     croak("Invalid argument supplied to Math::Complex_C::Long::_overload_equiv function");
 }
 
 SV * _overload_not_equiv(SV * a, SV * b, SV * third) {
-     if(creal(*(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(a))))) == creal(*(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(b))))) &&
-        cimag(*(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(a))))) == cimag(*(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(b))))))
-          return newSVuv(0);
-     return newSVuv(1);
+     if(SvUOK(b) || SvIOK(b) || SvNOK(b)) {
+       if(SvNV(b) == creal(*(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(a))))) &&
+          0       == cimag(*(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(a)))))) return newSVuv(0);
+       return newSVuv(1);
+     }
+
+     if(sv_isobject(b)) {
+       if(strEQ(HvNAME(SvSTASH(SvRV(b))), "Math::Complex_C::Long")) {
+         if(creal(*(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(a))))) == creal(*(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(b))))) &&
+            cimag(*(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(a))))) == cimag(*(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(b))))))
+              return newSVuv(0);
+         return newSVuv(1);
+       }
+     }
+     croak("Invalid argument supplied to Math::Complex_C::Long::_overload_not_equiv function");
 }
 
 
@@ -781,12 +802,6 @@ MODULE = Math::Complex_C::Long	PACKAGE = Math::Complex_C::Long
 
 PROTOTYPES: DISABLE
 
-
-double
-_get_nan ()
-
-double
-_get_inf ()
 
 SV *
 create_cl ()

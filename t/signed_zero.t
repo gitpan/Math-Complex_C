@@ -27,15 +27,14 @@ else {
 if("$im" eq "-0") {
   print "ok 2\n";
 }
+elsif($correct && "$im" eq "0") {
+  warn "\n  \$im: $im\n";
+  warn " Skipping test 2 - this is a known bug with some (old) compilers\n";
+  warn " Correct result is '-0'\n";
+  print "ok 2\n";
+}
 else {
-  if($correct) {
-    warn "\n  \$im: $im\n";
-    warn "Correct result is '-0' - this is a known issue with some (old) compilers\n";
-    print "not ok 2\n";
-  }
-  else {
-    warn "\n  \$im: $im (correct result is '-0')\n";
-    print "not ok 2\n";
-  }
+  warn "\n  \$im: $im (correct result is '-0')\n";
+  print "not ok 2\n";
 }
 

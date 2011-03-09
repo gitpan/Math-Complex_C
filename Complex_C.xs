@@ -251,17 +251,37 @@ SV * _overload_not(SV * rop, SV * second, SV * third) {
 }
 
 SV * _overload_equiv(SV * a, SV * b, SV * third) {
-     if(creal(*(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(a))))) == creal(*(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(b))))) &&
-        cimag(*(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(a))))) == cimag(*(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(b))))))
-          return newSVuv(1);
-     return newSVuv(0);
+     if(SvUOK(b) || SvIOK(b) || SvNOK(b)) {
+       if(SvNV(b) == creal(*(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(a))))) &&
+          0       == cimag(*(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(a)))))) return newSVuv(1);
+       return newSVuv(0);
+     }
+     if(sv_isobject(b)) {
+       if(strEQ(HvNAME(SvSTASH(SvRV(b))), "Math::Complex_C")) {
+         if(creal(*(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(a))))) == creal(*(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(b))))) &&
+            cimag(*(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(a))))) == cimag(*(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(b))))))
+              return newSVuv(1);
+         return newSVuv(0);
+       }
+     }
+     croak("Invalid argument supplied to Math::Complex_C::_overload_equiv function");
 }
 
 SV * _overload_not_equiv(SV * a, SV * b, SV * third) {
-     if(creal(*(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(a))))) == creal(*(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(b))))) &&
-        cimag(*(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(a))))) == cimag(*(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(b))))))
-          return newSVuv(0);
-     return newSVuv(1);
+     if(SvUOK(b) || SvIOK(b) || SvNOK(b)) {
+       if(SvNV(b) == creal(*(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(a))))) &&
+          0       == cimag(*(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(a)))))) return newSVuv(0);
+       return newSVuv(1);
+     }
+     if(sv_isobject(b)) {
+       if(strEQ(HvNAME(SvSTASH(SvRV(b))), "Math::Complex_C")) {
+         if(creal(*(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(a))))) == creal(*(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(b))))) &&
+            cimag(*(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(a))))) == cimag(*(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(b))))))
+              return newSVuv(0);
+         return newSVuv(1);
+       }
+     }
+     croak("Invalid argument supplied to Math::Complex_C::_overload_not_equiv function");
 }
 
 

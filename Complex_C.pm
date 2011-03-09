@@ -33,7 +33,7 @@ use overload
     'cos'   => \&_overload_cos,
     'atan2' => \&_overload_atan2;
 
-$Math::Complex_C::VERSION = '0.02';
+$Math::Complex_C::VERSION = '0.03';
 
 DynaLoader::bootstrap Math::Complex_C $Math::Complex_C::VERSION;
 
@@ -389,14 +389,17 @@ Math::Complex_C - perl interface to C's complex.h functions.
 =head1 OPERATOR OVERLOADING
 
    Both Math::Complex_C and Math::Complex_C::Long overload the
-   same operations.
-   The following operators are overloaded:
+   following operators:
     *, +, /, -, **,
     *=, +=, /=, -=, **=,
     not, !, bool,
     ==, !=,
     =, "",
     abs, exp, log, cos, sin, atan2, sqrt
+
+    Cross-class overloading is not impllemented - that is, you
+    cannot use both a Math::Complex_C::Long object and a 
+    Math::Complex_C object in the same overloaded operation.
 
     Note: For the purposes of the overloaded 'not', '!' and 'bool'
     operators, a "false" Math::Complex_C object is one with real 
@@ -405,10 +408,10 @@ Math::Complex_C - perl interface to C's complex.h functions.
     (A "true" Math::Complex_C object is, of course, simply one
     that is not "false".)
 
-    If the power passed to the overloaded '**' or '**=' operator
-    is an IV/UV (integer), it will be converted to an NV (floating
-    point) before the calculation is performed.
-   
+    If the value passed to the overloaded '**', '**=' or
+    'equivalence' operators is an IV/UV (integer), it will be
+    converted to an NV (floating point value) before the calculation
+    is performed.
 
 =head1 LICENSE
 

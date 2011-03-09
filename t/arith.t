@@ -2,7 +2,7 @@ use warnings;
 use strict;
 use Math::Complex_C qw(:all);
 
-print "1..24\n";
+print "1..54\n";
 
 my $eps = 1e-12;
 
@@ -234,6 +234,245 @@ else {
   warn "\$c3: $c3\n";
   print "not ok 24\n";
 }
+
+my $c4 = Math::Complex_C::Long->new(7, 12.3);
+
+eval {my $c5 = $c4 + $c1;};
+if($@) {
+  if($@ =~ /Invalid argument supplied/) {print "ok 25\n"}
+  else {
+    warn "\$\@: $@\n";
+    print "not ok 25\n";
+  }
+}
+else { warn "not ok 25\n"}
+
+eval {my $c5 = $c4 * $c1;};
+if($@) {
+  if($@ =~ /Invalid argument supplied/) {print "ok 26\n"}
+  else {
+    warn "\$\@: $@\n";
+    print "not ok 26\n";
+  }
+}
+else { warn "not ok 26\n"}
+
+eval {my $c5 = $c4 / $c1;};
+if($@) {
+  if($@ =~ /Invalid argument supplied/) {print "ok 27\n"}
+  else {
+    warn "\$\@: $@\n";
+    print "not ok 27\n";
+  }
+}
+else { warn "not ok 27\n"}
+
+eval {my $c5 = $c4 - $c1;}; 
+if($@) {
+  if($@ =~ /Invalid argument supplied/) {print "ok 28\n"}
+  else {
+    warn "\$\@: $@\n";
+    print "not ok 28\n";
+  }
+}
+else { warn "not ok 28\n"}
+
+eval {my $c5 = $c1 + $c4;};
+if($@) {
+  if($@ =~ /Invalid argument supplied/) {print "ok 29\n"}
+  else {
+    warn "\$\@: $@\n";
+    print "not ok 29\n";
+  }
+}
+else { warn "not ok 29\n"}
+
+eval {my $c5 = $c1 * $c4;};
+if($@) {
+  if($@ =~ /Invalid argument supplied/) {print "ok 30\n"}
+  else {
+    warn "\$\@: $@\n";
+    print "not ok 30\n";
+  }
+}
+else { warn "not ok 30\n"}
+
+eval {my $c5 = $c1 / $c4;};
+if($@) {
+  if($@ =~ /Invalid argument supplied/) {print "ok 31\n"}
+  else {
+    warn "\$\@: $@\n";
+    print "not ok 31\n";
+  }
+}
+else { warn "not ok 31\n"}
+
+eval {my $c5 = $c1 - $c4;};
+if($@) {
+  if($@ =~ /Invalid argument supplied/) {print "ok 32\n"}
+  else {
+    warn "\$\@: $@\n";
+    print "not ok 32\n";
+  }
+}
+else { warn "not ok 32\n"}
+
+############################
+############################
+
+eval {my $c5 = ($c1 == $c4);};
+if($@) {
+  if($@ =~ /Invalid argument supplied/) {print "ok 33\n"}
+  else {
+    warn "\$\@: $@\n";
+    print "not ok 33\n";
+  }
+}
+else { warn "not ok 33\n"}
+
+eval {my $c5 = ($c4 == $c1);};
+if($@) {
+  if($@ =~ /Invalid argument supplied/) {print "ok 34\n"}
+  else {
+    warn "\$\@: $@\n";
+    print "not ok 34\n";
+  }
+}
+else { warn "not ok 34\n"}
+
+eval {my $c5 = ($c1 != $c4);};
+if($@) {
+  if($@ =~ /Invalid argument supplied/) {print "ok 35\n"}
+  else {
+    warn "\$\@: $@\n";
+    print "not ok 35\n";
+  }
+}
+else { warn "not ok 35\n"}
+
+eval {my $c5 = ($c4 != $c1);};
+if($@) {
+  if($@ =~ /Invalid argument supplied/) {print "ok 36\n"}
+  else {
+    warn "\$\@: $@\n";
+    print "not ok 36\n";
+  }
+}
+else { warn "not ok 36\n"}
+
+###########################
+###########################
+
+eval {$c4 += $c1;};
+if($@) {
+  if($@ =~ /Invalid argument supplied/) {print "ok 37\n"}
+  else {
+    warn "\$\@: $@\n";
+    print "not ok 37\n";
+  }
+}
+else { warn "not ok 37\n"}
+
+eval {$c4 *= $c1};
+if($@) {
+  if($@ =~ /Invalid argument supplied/) {print "ok 38\n"}
+  else {
+    warn "\$\@: $@\n";
+    print "not ok 38\n";
+  }
+}
+else { warn "not ok 38\n"}
+
+eval {$c4 /= $c1;};
+if($@) {
+  if($@ =~ /Invalid argument supplied/) {print "ok 39\n"}
+  else {
+    warn "\$\@: $@\n";
+    print "not ok 39\n";
+  }
+}
+else { warn "not ok 39\n"}
+
+eval {$c4 -= $c1;}; 
+if($@) {
+  if($@ =~ /Invalid argument supplied/) {print "ok 40\n"}
+  else {
+    warn "\$\@: $@\n";
+    print "not ok 40\n";
+  }
+}
+else { warn "not ok 40\n"}
+
+eval {$c1 += $c4;};
+if($@) {
+  if($@ =~ /Invalid argument supplied/) {print "ok 41\n"}
+  else {
+    warn "\$\@: $@\n";
+    print "not ok 41\n";
+  }
+}
+else { warn "not ok 41\n"}
+
+eval {$c1 *= $c4;};
+if($@) {
+  if($@ =~ /Invalid argument supplied/) {print "ok 42\n"}
+  else {
+    warn "\$\@: $@\n";
+    print "not ok 42\n";
+  }
+}
+else { warn "not ok 42\n"}
+
+eval {$c1 /= $c4;};
+if($@) {
+  if($@ =~ /Invalid argument supplied/) {print "ok 43\n"}
+  else {
+    warn "\$\@: $@\n";
+    print "not ok 43\n";
+  }
+}
+else { warn "not ok 43\n"}
+
+eval {$c1 -= $c4;};
+if($@) {
+  if($@ =~ /Invalid argument supplied/) {print "ok 44\n"}
+  else {
+    warn "\$\@: $@\n";
+    print "not ok 44\n";
+  }
+}
+else { warn "not ok 44\n"}
+
+if($c1 == $c1 + 0){print "ok 45\n"}
+else {print "not ok 45\n"}
+
+if($c4 == $c4 + 0){print "ok 46\n"}
+else {print "not ok 46\n"}
+
+if($c1 != $c1 + 1){print "ok 47\n"}
+else {print "not ok 47\n"}
+
+if($c4 != $c4 + 1){print "ok 48\n"}
+else {print "not ok 48\n"}
+
+if(Math::Complex_C->new() != Math::Complex_C->new()) {print "ok 49\n"}
+else {print "not ok 49\n"}
+
+if(Math::Complex_C::Long->new() != Math::Complex_C::Long->new()) {print "ok 50\n"}
+else {print "not ok 50\n"}
+
+if(Math::Complex_C->new(get_nan(), 1) != Math::Complex_C->new(get_nan(), 1)) {print "ok 51\n"}
+else {print "not ok 51\n"}
+
+if(Math::Complex_C::Long->new(get_nanl(), 1) != Math::Complex_C::Long->new(get_nanl(), 1)) {print "ok 52\n"}
+else {print "not ok 52\n"}
+
+if(Math::Complex_C->new(1, get_nan()) != Math::Complex_C->new(1, get_nan())) {print "ok 53\n"}
+else {print "not ok 53\n"}
+
+if(Math::Complex_C::Long->new(1, get_nanl()) != Math::Complex_C::Long->new(1, get_nanl())) {print "ok 54\n"}
+else {print "not ok 54\n"}
+
 
 sub approx {
     if(($_[0] > ($_[1] - $_[2])) && ($_[0] < ($_[1] + $_[2]))) {return 1}
