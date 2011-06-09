@@ -5,6 +5,7 @@ Makefile.PL
 MANIFEST
 README
 t/aab_basic.t
+t/aab_neg_zero.t
 t/abs_arg.t
 t/absl_argl.t
 t/arith.t

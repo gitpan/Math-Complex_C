@@ -86,7 +86,7 @@ else {
 
 $sz = imag_cl($rop);
 
-if("$sz" eq "-0") {print "ok 8\n"}
+if(is_neg_zero($sz)) {print "ok 8\n"}
 else {
   warn "8: \$rop: $rop\n";
   print "not ok 8\n";
@@ -107,7 +107,7 @@ else {
 
 $sz = imag_cl($rop);
 if("$nan" =~ /^\-/) {
-  if("$sz" eq "-0") {print "ok 10\n"}
+  if(is_neg_zero($sz)) {print "ok 10\n"}
   else {
     warn "10: \$rop: $rop\n\$nan: $nan\n";
     print "not ok 10\n";
@@ -157,7 +157,7 @@ else {
 
 $sz = imag_cl($rop);
 
-if("$sz" eq "-0") {print "ok 14\n"}
+if(is_neg_zero($sz)) {print "ok 14\n"}
 else {
   warn "14: \$rop: $rop\n";
   print "not ok 14\n";

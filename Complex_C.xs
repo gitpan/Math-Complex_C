@@ -798,7 +798,38 @@ SV * _double_Complexsize() {
 SV * _longdouble_Complexsize() {
      return newSViv(sizeof(long double _Complex));
 }
-     
+
+SV * is_neg_zero(SV * x) {
+     char * buffer;
+
+     if(!SvNOK(x)) {
+      warn("Argument passed to is_neg_zero function is not an NV - therefore can't be '-0'");
+      return newSVuv(0);
+     }
+
+     if(SvNV(x) != 0) return newSVuv(0);
+
+     Newz(42, buffer, 2, char);
+     if(buffer == NULL) croak("Failed to allocate memory in is_neg_zero");
+
+     sprintf(buffer, "%.0f", (double)SvNV(x));
+
+     if(strEQ(buffer, "-0")) {
+       Safefree(buffer);
+       return newSVuv(1);
+     }   
+
+     Safefree(buffer);
+     return newSVuv(0);
+}
+
+/* Attempt to return -0 */
+SV * _get_neg_zero() {
+     double d = 0.0;
+     d *= -1.1;
+
+     return newSVnv(d);
+}    
 
 MODULE = Math::Complex_C	PACKAGE = Math::Complex_C	
 
@@ -1644,4 +1675,11 @@ _double_Complexsize ()
 
 SV *
 _longdouble_Complexsize ()
+
+SV *
+is_neg_zero (x)
+	SV *	x
+
+SV *
+_get_neg_zero ()
 

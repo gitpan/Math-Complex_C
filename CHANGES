@@ -1,3 +1,8 @@
+0.04
+ - Add is_neg_zero() function. (Perl will often present '-0' as '0'.)
+ - Add aab_neg_zero.t to check how the compiler deals with -0, and whether
+   is_neg_zero() functions correctly.
+
 0.03
  - Fix assign_cl - internally it was assigning a double instead of a long double.
  - Skip (rather than fail) tests that are known to be failing because

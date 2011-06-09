@@ -33,7 +33,7 @@ use overload
     'cos'   => \&_overload_cos,
     'atan2' => \&_overload_atan2;
 
-$Math::Complex_C::VERSION = '0.03';
+$Math::Complex_C::VERSION = '0.04';
 
 DynaLoader::bootstrap Math::Complex_C $Math::Complex_C::VERSION;
 
@@ -42,7 +42,7 @@ DynaLoader::bootstrap Math::Complex_C $Math::Complex_C::VERSION;
     create_c assign_c mul_c mul_c_nv mul_c_iv mul_c_uv div_c div_c_nv div_c_iv div_c_uv add_c 
     add_c_nv add_c_iv add_c_uv sub_c sub_c_nv sub_c_iv sub_c_uv real_c 
     imag_c arg_c abs_c conj_c acos_c asin_c atan_c cos_c sin_c tan_c acosh_c asinh_c atanh_c 
-    cosh_c sinh_c tanh_c exp_c log_c sqrt_c proj_c pow_c get_nan get_inf is_nan is_inf
+    cosh_c sinh_c tanh_c exp_c log_c sqrt_c proj_c pow_c get_nan get_inf is_nan is_inf is_neg_zero
 
     create_cl assign_cl mul_cl mul_c_nvl mul_c_ivl mul_c_uvl div_cl div_c_nvl div_c_ivl div_c_uvl add_cl 
     add_c_nvl add_c_ivl add_c_uvl sub_cl sub_c_nvl sub_c_ivl sub_c_uvl real_cl 
@@ -54,7 +54,7 @@ DynaLoader::bootstrap Math::Complex_C $Math::Complex_C::VERSION;
     create_c assign_c mul_c mul_c_nv mul_c_iv mul_c_uv div_c div_c_nv div_c_iv div_c_uv add_c 
     add_c_nv add_c_iv add_c_uv sub_c sub_c_nv sub_c_iv sub_c_uv real_c 
     imag_c arg_c abs_c conj_c acos_c asin_c atan_c cos_c sin_c tan_c acosh_c asinh_c atanh_c 
-    cosh_c sinh_c tanh_c exp_c log_c sqrt_c proj_c pow_c get_nan get_inf is_nan is_inf
+    cosh_c sinh_c tanh_c exp_c log_c sqrt_c proj_c pow_c get_nan get_inf is_nan is_inf is_neg_zero
 
     create_cl assign_cl mul_cl mul_c_nvl mul_c_ivl mul_c_uvl div_cl div_c_nvl div_c_ivl div_c_uvl add_cl 
     add_c_nvl add_c_ivl add_c_uvl sub_cl sub_c_nvl sub_c_ivl sub_c_uvl real_cl 
@@ -385,6 +385,15 @@ Math::Complex_C - perl interface to C's complex.h functions.
    $bool = is_inf($op);
    $bool = is_infl($op);
     Returns true if $op is -Inf or +Inf - else returns false
+
+   $bool = is_neg_zero($nv);
+    Returns true if $nv is -0. Else returns false - hence the function
+    returns false (and warns) if $nv is not an NV (since only an NV 
+    can be -0).
+    Perl can't be relied upon to print the '-' sign if the NV is -0.
+    For example, 5.12.0 *will* print it, but 5.14.0 won't.
+    Therefore, if we care about the sign, we need to check using this
+    XSub.
 
 =head1 OPERATOR OVERLOADING
 

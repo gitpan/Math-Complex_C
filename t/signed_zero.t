@@ -15,7 +15,7 @@ my $im = imag_c($rop);
 
 my $correct = 0;
 
-if("$re" eq "-0") {
+if(is_neg_zero($re)) {
   $correct = 1;
   print "ok 1\n";
 }
@@ -24,7 +24,7 @@ else {
   print "not ok 1\n";
 }
 
-if("$im" eq "-0") {
+if(is_neg_zero($im)) {
   print "ok 2\n";
 }
 elsif($correct && "$im" eq "0") {
