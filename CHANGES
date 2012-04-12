@@ -1,3 +1,11 @@
+0.05
+ - Remove 'not' from overloads. Apparently achieved nothing anyway, and 5.16
+   warns that it's invalid.
+ - Devel::Peek::Dump() a couple of variables in t/arith.t, to try and see 
+   why tests 10-12 fail - ie iff they fail && if Devel::Peek is available.
+   (Only reported failure I know of is
+   http://www.cpantesters.org/cpan/report/e8c48154-9492-11e0-9abf-e615ed0326e0.)
+
 0.04
  - Add is_neg_zero() function. (Perl will often present '-0' as '0'.)
  - Add aab_neg_zero.t to check how the compiler deals with -0, and whether

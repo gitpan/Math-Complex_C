@@ -10,6 +10,14 @@
 #define SvUOK SvIsUV
 #endif
 
+#ifndef Newx
+#  define Newx(v,n,t) New(0,v,n,t)
+#endif
+
+#ifndef Newxz
+#  define Newxz(v,n,t) Newz(0,v,n,t)
+#endif
+
 int _is_nan(long double x) {
     if(x == x) return 0;
     return 1;
@@ -21,7 +29,7 @@ int _is_inf(long double x) {
     return 1;
 }
 
-long double _get_nan() {
+long double _get_nan(void) {
     long double _Complex c;
     long double nan, inf;
     __real__ c = 1.0;
@@ -32,7 +40,7 @@ long double _get_nan() {
     return nan;       
 }
 
-long double _get_inf() {
+long double _get_inf(void) {
     long double _Complex c;
     long double inf;
     __real__ c = 1.0;
@@ -42,7 +50,7 @@ long double _get_inf() {
     return inf;      
 }
 
-SV * create_cl() {
+SV * create_cl(void) {
 
      MATH_COMPLEX *pc;
      SV * obj_ref, * obj;
@@ -739,11 +747,11 @@ SV * _overload_atan2(SV * a, SV * b, SV * third) {
      return obj_ref;
 }
 
-SV * get_nanl() {
+SV * get_nanl(void) {
      return newSVnv(_get_nan());
 }
 
-SV * get_infl() {
+SV * get_infl(void) {
      return newSVnv(_get_inf());
 }
 
@@ -758,11 +766,11 @@ SV * is_infl(SV * a) {
      return newSVuv(1);
 }
 
-SV * _complex_type() {
+SV * _complex_type(void) {
     return newSVpv("long double _Complex", 0);
 }
 
-SV * _double_type() {
+SV * _double_type(void) {
     return newSVpv("long double", 0);
 }
 
@@ -782,6 +790,7 @@ PROTOTYPES: DISABLE
 
 SV *
 create_cl ()
+		
 
 void
 assign_cl (rop, d1, d2)
@@ -1562,9 +1571,11 @@ _overload_atan2 (a, b, third)
 
 SV *
 get_nanl ()
+		
 
 SV *
 get_infl ()
+		
 
 SV *
 is_nanl (a)
@@ -1576,9 +1587,11 @@ is_infl (a)
 
 SV *
 _complex_type ()
+		
 
 SV *
 _double_type ()
+		
 
 SV *
 _get_nv (x)

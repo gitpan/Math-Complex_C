@@ -6,6 +6,11 @@ print "1..54\n";
 
 my $eps = 1e-12;
 
+my $avail = 0;
+my $toggle = 1;
+eval{require Devel::Peek;};
+$avail = 1 unless $@;
+
 my $c1 = Math::Complex_C->new(5, 6);
 my $c2 = Math::Complex_C->new(3, 2);
 
@@ -100,6 +105,17 @@ $c3 = $c3 - 17;
 if($c3 == Math::Complex_C->new(3, 2)) {print "ok 10\n"}
 else {
   warn "\$c3: $c3\n";
+  if($avail && $toggle) {
+    warn "Dumping real part of \$c3\n";
+    Devel::Peek::Dump(real_c($c3));
+    warn "Dumping real part of new(3,2)\n";
+    Devel::Peek::Dump(real_c(Math::Complex_C->new(3, 2)));
+    warn "Dumping imaginary part of \$c3\n";
+    Devel::Peek::Dump(imag_c($c3));
+    warn "Dumping imaginary part of new(3,2)\n";
+    Devel::Peek::Dump(imag_c(Math::Complex_C->new(3, 2)));
+    $toggle = 0; # No more dumps until $toggle is reset.
+  }
   print "not ok 10\n";
 }
 
@@ -109,6 +125,17 @@ $c3 = $c3 - (-17);
 if($c3 == Math::Complex_C->new(3, 2)) {print "ok 11\n"}
 else {
   warn "\$c3: $c3\n";
+  if($avail && $toggle) {
+    warn "Dumping real part of \$c3\n";
+    Devel::Peek::Dump(real_c($c3));
+    warn "Dumping real part of new(3,2)\n";
+    Devel::Peek::Dump(real_c(Math::Complex_C->new(3, 2)));
+    warn "Dumping imaginary part of \$c3\n";
+    Devel::Peek::Dump(imag_c($c3));
+    warn "Dumping imaginary part of new(3,2)\n";
+    Devel::Peek::Dump(imag_c(Math::Complex_C->new(3, 2)));
+    $toggle = 0; # No more dumps until $toggle is reset.
+  }
   print "not ok 11\n";
 }
 
@@ -118,8 +145,21 @@ $c3 = $c3 - (-19.25);
 if($c3 == Math::Complex_C->new(3, 2)) {print "ok 12\n"}
 else {
   warn "\$c3: $c3\n";
+  if($avail && $toggle) {
+    warn "Dumping real part of \$c3\n";
+    Devel::Peek::Dump(real_c($c3));
+    warn "Dumping real part of new(3,2)\n";
+    Devel::Peek::Dump(real_c(Math::Complex_C->new(3, 2)));
+    warn "Dumping imaginary part of \$c3\n";
+    Devel::Peek::Dump(imag_c($c3));
+    warn "Dumping imaginary part of new(3,2)\n";
+    Devel::Peek::Dump(imag_c(Math::Complex_C->new(3, 2)));
+    $toggle = 0; # No more dumps until $toggle is reset.
+  }
   print "not ok 12\n";
 }
+
+$toggle = 1; #Reset $toggle.
 
 $c3 = $c2 * $c1;
 $c3 = $c3 / $c1;

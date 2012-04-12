@@ -11,6 +11,14 @@
 #define SvUOK SvIsUV
 #endif
 
+#ifndef Newx
+#  define Newx(v,n,t) New(0,v,n,t)
+#endif
+
+#ifndef Newxz
+#  define Newxz(v,n,t) Newz(0,v,n,t)
+#endif
+
 int _is_nan(double x) {
     if(x == x) return 0;
     return 1;
@@ -22,7 +30,7 @@ int _is_inf(double x) {
     return 1;
 }
 
-double _get_nan() {
+double _get_nan(void) {
     double _Complex c;
     double nan, inf;
     __real__ c = 1.0;
@@ -33,7 +41,7 @@ double _get_nan() {
     return nan;       
 }
 
-double _get_inf() {
+double _get_inf(void) {
     double _Complex c;
     double inf;
     __real__ c = 1.0;
@@ -43,7 +51,7 @@ double _get_inf() {
     return inf;      
 }
 
-SV * create_c() {
+SV * create_c(void) {
 
      MATH_COMPLEX *pc;
      SV * obj_ref, * obj;
@@ -739,11 +747,11 @@ SV * _overload_atan2(SV * a, SV * b, SV * third) {
      return obj_ref;
 }
 
-SV * get_nan() {
+SV * get_nan(void) {
      return newSVnv(_get_nan());
 }
 
-SV * get_inf() {
+SV * get_inf(void) {
      return newSVnv(_get_inf());
 }
 
@@ -758,11 +766,11 @@ SV * is_inf(SV * a) {
      return newSVuv(1);
 }
 
-SV * _complex_type() {
+SV * _complex_type(void) {
     return newSVpv("double _Complex", 0);
 }
 
-SV * _double_type() {
+SV * _double_type(void) {
     return newSVpv("double", 0);
 }
 
@@ -775,27 +783,27 @@ SV * _which_package(SV * b) {
      return newSVpv("Not an object", 0);
 }
 
-SV * _ivsize() {
+SV * _ivsize(void) {
      return newSViv(sizeof(IV));
 }
 
-SV * _nvsize() {
+SV * _nvsize(void) {
      return newSViv(sizeof(NV));
 }
 
-SV * _doublesize() {
+SV * _doublesize(void) {
      return newSViv(sizeof(double));
 }
 
-SV * _longdoublesize() {
+SV * _longdoublesize(void) {
      return newSViv(sizeof(long double));
 }
 
-SV * _double_Complexsize() {
+SV * _double_Complexsize(void) {
      return newSViv(sizeof(double _Complex));
 }
 
-SV * _longdouble_Complexsize() {
+SV * _longdouble_Complexsize(void) {
      return newSViv(sizeof(long double _Complex));
 }
 
@@ -824,7 +832,7 @@ SV * is_neg_zero(SV * x) {
 }
 
 /* Attempt to return -0 */
-SV * _get_neg_zero() {
+SV * _get_neg_zero(void) {
      double d = 0.0;
      d *= -1.1;
 
@@ -846,12 +854,15 @@ _is_inf (x)
 
 double
 _get_nan ()
+		
 
 double
 _get_inf ()
+		
 
 SV *
 create_c ()
+		
 
 void
 assign_c (rop, d1, d2)
@@ -1632,9 +1643,11 @@ _overload_atan2 (a, b, third)
 
 SV *
 get_nan ()
+		
 
 SV *
 get_inf ()
+		
 
 SV *
 is_nan (a)
@@ -1646,9 +1659,11 @@ is_inf (a)
 
 SV *
 _complex_type ()
+		
 
 SV *
 _double_type ()
+		
 
 SV *
 _get_nv (x)
@@ -1660,21 +1675,27 @@ _which_package (b)
 
 SV *
 _ivsize ()
+		
 
 SV *
 _nvsize ()
+		
 
 SV *
 _doublesize ()
+		
 
 SV *
 _longdoublesize ()
+		
 
 SV *
 _double_Complexsize ()
+		
 
 SV *
 _longdouble_Complexsize ()
+		
 
 SV *
 is_neg_zero (x)
@@ -1682,4 +1703,5 @@ is_neg_zero (x)
 
 SV *
 _get_neg_zero ()
+		
 

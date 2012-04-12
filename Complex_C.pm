@@ -22,7 +22,6 @@ use overload
     '=='    => \&_overload_equiv,
     '!='    => \&_overload_not_equiv,
     '!'     => \&_overload_not,
-    'not'   => \&_overload_not,
     'bool'  => \&_overload_true,
     '='     => \&_overload_copy,
     '""'    => \&_overload_string,
@@ -33,7 +32,7 @@ use overload
     'cos'   => \&_overload_cos,
     'atan2' => \&_overload_atan2;
 
-$Math::Complex_C::VERSION = '0.04';
+$Math::Complex_C::VERSION = '0.05';
 
 DynaLoader::bootstrap Math::Complex_C $Math::Complex_C::VERSION;
 
@@ -401,7 +400,7 @@ Math::Complex_C - perl interface to C's complex.h functions.
    following operators:
     *, +, /, -, **,
     *=, +=, /=, -=, **=,
-    not, !, bool,
+    !, bool,
     ==, !=,
     =, "",
     abs, exp, log, cos, sin, atan2, sqrt
