@@ -26,6 +26,7 @@ int _is_nan(double x) {
 
 int _is_inf(double x) {
     if(x == 0) return 0;
+    if(_is_nan(x)) return 0;
     if(x / x == x / x) return 0;
     return 1;
 }
@@ -762,6 +763,7 @@ SV * is_nan(SV * a) {
 
 SV * is_inf(SV * a) {
      if(SvNV(a) == 0) return newSVuv(0);
+     if(SvNV(a) != SvNV(a)) return newSVuv(0);
      if(SvNV(a) / SvNV(a) == SvNV(a) / SvNV(a)) return newSVuv(0);
      return newSVuv(1);
 }

@@ -1,3 +1,7 @@
+0.06
+ - Fix is_inf() and is_infl() in Complex_C.xs and Long.xs respectively.
+  (They were reporting a NaN to be an Inf.)
+
 0.05
  - Remove 'not' from overloads. Apparently achieved nothing anyway, and 5.16
    warns that it's invalid.

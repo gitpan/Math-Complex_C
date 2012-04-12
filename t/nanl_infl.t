@@ -3,7 +3,7 @@ use strict;
 
 use Math::Complex_C qw(:all);
 
-print "1..5\n";
+print "1..6\n";
 
 my $nan = get_nanl();
 
@@ -40,3 +40,6 @@ else {
   warn "\$ninf: $ninf\n";
   print "not ok 5\n";
 } 
+
+if(is_infl($nan)) {print "not ok 6\n"}
+else {print "ok 6\n"}
