@@ -30,9 +30,10 @@ use overload
     'cos'   => \&_overload_cos,
     'atan2' => \&_overload_atan2;
 
-$Math::Complex_C::Long::VERSION = '0.06';
+our $VERSION = '0.07';
+$VERSION = eval $VERSION;
 
-DynaLoader::bootstrap Math::Complex_C::Long $Math::Complex_C::Long::VERSION;
+DynaLoader::bootstrap Math::Complex_C::Long $VERSION;
 
 @Math::Complex_C::Long::EXPORT = ();
 @Math::Complex_C::Long::EXPORT_OK = ();
@@ -40,7 +41,44 @@ DynaLoader::bootstrap Math::Complex_C::Long $Math::Complex_C::Long::VERSION;
 sub dl_load_flags {0} # Prevent DynaLoader from complaining and croaking
 
 sub _overload_string {
-     return "(" . real_cl($_[0]) . " " . imag_cl($_[0]) . ")";
+    my($real, $imag) = (real_cl($_[0]), imag_cl($_[0]));
+    my($r, $i) = ld_to_str($_[0]);
+
+    if($real == 0) {
+      $r = $real =~ /^\-/ ? '-0' : '0';
+    }
+    elsif($real != $real) {
+      $r = 'NaN';
+    }
+    elsif(($real / $real) != ($real / $real)) {
+      $r = $real < 0 ? '-Inf' : 'Inf';
+    }
+    else {
+      my @re = split /e/i, $r;
+      while(substr($re[0], -1, 1) eq '0' && substr($re[0], -2, 1) ne '.') {
+        chop $re[0];
+      }
+      $r = $re[0] . 'e' . $re[1];
+    }
+
+    if($imag == 0) {
+      $i = $imag =~ /^\-/ ? '-0' : '0';
+    }
+    elsif($imag != $imag) {
+      $i = 'NaN';
+    }
+    elsif(($imag / $imag) != ($imag / $imag)) {
+      $i = $imag < 0 ? '-Inf' : 'Inf';
+    }
+    else {
+      my @im = split /e/i, $i;
+      while(substr($im[0], -1, 1) eq '0' && substr($im[0], -2, 1) ne '.') {
+        chop $im[0];
+      }
+      $i = $im[0] . 'e' . $im[1];
+    }
+
+    return "(" . $r . " " . $i . ")";
 }
 
 sub new {

@@ -16,16 +16,20 @@ t/conj_proj.t
 t/conjl_projl.t
 t/exp.t
 t/expl.t
+t/long_double.t
 t/nan_inf.t
 t/nanl_infl.t
 t/new.t
 t/newl.t
+t/overload_string.t
+t/pod.t
 t/pow.t
 t/powl.t
 t/signed_zero.t
-t/signed_zero.t
+t/signed_zerol.t
+t/to_string.t
 t/trig.t
-t/trig.t
+t/trigl.t
 t/type.t
 
 Long/Long.pm

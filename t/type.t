@@ -77,7 +77,12 @@ elsif(
     $s_d    == $s_d_C  / 2 &&
     $s_nv   == $s_d
   ) {
-  if($rc == $rcl && $ic == $icl) {print "ok 5\n"}
+  #if($rc == $rcl && $ic == $icl) {print "ok 5\n"} # this changed with 0.07.
+                                                   # $cc and $ccl are equivalent for 0.06 and earlier,
+                                                   # but different for 0.07 and later - when Long->new()
+                                                   # began using strtold() to assign Long values for
+                                                   # perls where _nsize() != _longdouble size().
+  unless($rc == $rcl && $ic == $icl) {print "ok 5\n"}
   else {
     warn "elsif:\n\$rc: $rc\n\$rcl: $rcl\n\$ic: $ic\n\$icl: $icl\n";
     print "not ok 5\n";

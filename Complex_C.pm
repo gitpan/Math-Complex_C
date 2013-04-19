@@ -32,9 +32,10 @@ use overload
     'cos'   => \&_overload_cos,
     'atan2' => \&_overload_atan2;
 
-$Math::Complex_C::VERSION = '0.06';
+our $VERSION = '0.07';
+$VERSION = eval $VERSION;
 
-DynaLoader::bootstrap Math::Complex_C $Math::Complex_C::VERSION;
+DynaLoader::bootstrap Math::Complex_C $VERSION;
 
 @Math::Complex_C::EXPORT = ();
 @Math::Complex_C::EXPORT_OK = qw(
@@ -44,9 +45,11 @@ DynaLoader::bootstrap Math::Complex_C $Math::Complex_C::VERSION;
     cosh_c sinh_c tanh_c exp_c log_c sqrt_c proj_c pow_c get_nan get_inf is_nan is_inf is_neg_zero
 
     create_cl assign_cl mul_cl mul_c_nvl mul_c_ivl mul_c_uvl div_cl div_c_nvl div_c_ivl div_c_uvl add_cl 
-    add_c_nvl add_c_ivl add_c_uvl sub_cl sub_c_nvl sub_c_ivl sub_c_uvl real_cl 
+    add_c_nvl add_c_ivl add_c_uvl sub_cl sub_c_nvl sub_c_ivl sub_c_uvl real_cl real_cl2LD imag_cl2LD LD2cl
     imag_cl arg_cl abs_cl conj_cl acos_cl asin_cl atan_cl cos_cl sin_cl tan_cl acosh_cl asinh_cl atanh_cl
     cosh_cl sinh_cl tanh_cl exp_cl log_cl sqrt_cl proj_cl pow_cl get_nanl get_infl is_nanl is_infl
+
+    d_to_str d_to_strp ld_to_str ld_to_strp d_set_prec d_get_prec long_set_prec long_get_prec
     );
 
 %Math::Complex_C::EXPORT_TAGS = (all => [qw(
@@ -56,60 +59,106 @@ DynaLoader::bootstrap Math::Complex_C $Math::Complex_C::VERSION;
     cosh_c sinh_c tanh_c exp_c log_c sqrt_c proj_c pow_c get_nan get_inf is_nan is_inf is_neg_zero
 
     create_cl assign_cl mul_cl mul_c_nvl mul_c_ivl mul_c_uvl div_cl div_c_nvl div_c_ivl div_c_uvl add_cl 
-    add_c_nvl add_c_ivl add_c_uvl sub_cl sub_c_nvl sub_c_ivl sub_c_uvl real_cl 
+    add_c_nvl add_c_ivl add_c_uvl sub_cl sub_c_nvl sub_c_ivl sub_c_uvl real_cl real_cl2LD imag_cl2LD LD2cl
     imag_cl arg_cl abs_cl conj_cl acos_cl asin_cl atan_cl cos_cl sin_cl tan_cl acosh_cl asinh_cl atanh_cl
     cosh_cl sinh_cl tanh_cl exp_cl log_cl sqrt_cl proj_cl pow_cl get_nanl get_infl is_nanl is_infl
+
+    d_to_str d_to_strp ld_to_str ld_to_strp d_set_prec d_get_prec long_set_prec long_get_prec
     )]);
 
-*create_cl = \&Math::Complex_C::Long::create_cl;
-*assign_cl = \&Math::Complex_C::Long::assign_cl;
-*mul_cl    = \&Math::Complex_C::Long::mul_cl;
-*mul_c_nvl = \&Math::Complex_C::Long::mul_c_nvl;
-*mul_c_ivl = \&Math::Complex_C::Long::mul_c_ivl;
-*mul_c_uvl = \&Math::Complex_C::Long::mul_c_uvl ;
-*div_cl    = \&Math::Complex_C::Long::div_cl;
-*div_c_nvl = \&Math::Complex_C::Long::div_c_nvl;
-*div_c_ivl = \&Math::Complex_C::Long::div_c_ivl;
-*div_c_uvl = \&Math::Complex_C::Long::div_c_uvl;
-*add_cl    = \&Math::Complex_C::Long::add_cl;
-*add_c_nvl = \&Math::Complex_C::Long::add_c_nvl;
-*add_c_ivl = \&Math::Complex_C::Long::add_c_ivl;
-*add_c_uvl = \&Math::Complex_C::Long::add_c_uvl ;
-*sub_cl    = \&Math::Complex_C::Long::sub_cl;
-*sub_c_nvl = \&Math::Complex_C::Long::sub_c_nvl;
-*sub_c_ivl = \&Math::Complex_C::Long::sub_c_ivl;
-*sub_c_uvl = \&Math::Complex_C::Long::sub_c_uvl;
-*real_cl   = \&Math::Complex_C::Long::real_cl;
-*imag_cl   = \&Math::Complex_C::Long::imag_cl;
-*arg_cl    = \&Math::Complex_C::Long::arg_cl;
-*abs_cl    = \&Math::Complex_C::Long::abs_cl;
-*conj_cl   = \&Math::Complex_C::Long::conj_cl;
-*acos_cl   = \&Math::Complex_C::Long::acos_cl;
-*asin_cl   = \&Math::Complex_C::Long::asin_cl;
-*atan_cl   = \&Math::Complex_C::Long::atan_cl;
-*cos_cl    = \&Math::Complex_C::Long::cos_cl;
-*sin_cl    = \&Math::Complex_C::Long::sin_cl;
-*tan_cl    = \&Math::Complex_C::Long::tan_cl;
-*acosh_cl  = \&Math::Complex_C::Long::acosh_cl;
-*asinh_cl  = \&Math::Complex_C::Long::asinh_cl;
-*atanh_cl  = \&Math::Complex_C::Long::atanh_cl;
-*cosh_cl   = \&Math::Complex_C::Long::cosh_cl;
-*sinh_cl   = \&Math::Complex_C::Long::sinh_cl;
-*tanh_cl   = \&Math::Complex_C::Long::tanh_cl;
-*exp_cl    = \&Math::Complex_C::Long::exp_cl;
-*log_cl    = \&Math::Complex_C::Long::log_cl;
-*sqrt_cl   = \&Math::Complex_C::Long::sqrt_cl;
-*proj_cl   = \&Math::Complex_C::Long::proj_cl;
-*pow_cl    = \&Math::Complex_C::Long::pow_cl;
-*get_nanl  = \&Math::Complex_C::Long::get_nanl;
-*get_infl  = \&Math::Complex_C::Long::get_infl;
-*is_nanl   = \&Math::Complex_C::Long::is_nanl;
-*is_infl   = \&Math::Complex_C::Long::is_infl;
+*create_cl   = \&Math::Complex_C::Long::create_cl;
+*assign_cl   = \&Math::Complex_C::Long::assign_cl;
+*mul_cl      = \&Math::Complex_C::Long::mul_cl;
+*mul_c_nvl   = \&Math::Complex_C::Long::mul_c_nvl;
+*mul_c_ivl   = \&Math::Complex_C::Long::mul_c_ivl;
+*mul_c_uvl   = \&Math::Complex_C::Long::mul_c_uvl ;
+*div_cl      = \&Math::Complex_C::Long::div_cl;
+*div_c_nvl   = \&Math::Complex_C::Long::div_c_nvl;
+*div_c_ivl   = \&Math::Complex_C::Long::div_c_ivl;
+*div_c_uvl   = \&Math::Complex_C::Long::div_c_uvl;
+*add_cl      = \&Math::Complex_C::Long::add_cl;
+*add_c_nvl   = \&Math::Complex_C::Long::add_c_nvl;
+*add_c_ivl   = \&Math::Complex_C::Long::add_c_ivl;
+*add_c_uvl   = \&Math::Complex_C::Long::add_c_uvl ;
+*sub_cl      = \&Math::Complex_C::Long::sub_cl;
+*sub_c_nvl   = \&Math::Complex_C::Long::sub_c_nvl;
+*sub_c_ivl   = \&Math::Complex_C::Long::sub_c_ivl;
+*sub_c_uvl   = \&Math::Complex_C::Long::sub_c_uvl;
+*real_cl     = \&Math::Complex_C::Long::real_cl;
+*imag_cl     = \&Math::Complex_C::Long::imag_cl;
+*real_cl2LD  = \&Math::Complex_C::Long::real_cl2LD;
+*imag_cl2LD  = \&Math::Complex_C::Long::imag_cl2LD;
+*LD2cl       = \&Math::Complex_C::Long::LD2cl;
+*arg_cl      = \&Math::Complex_C::Long::arg_cl;
+*abs_cl      = \&Math::Complex_C::Long::abs_cl;
+*conj_cl     = \&Math::Complex_C::Long::conj_cl;
+*acos_cl     = \&Math::Complex_C::Long::acos_cl;
+*asin_cl     = \&Math::Complex_C::Long::asin_cl;
+*atan_cl     = \&Math::Complex_C::Long::atan_cl;
+*cos_cl      = \&Math::Complex_C::Long::cos_cl;
+*sin_cl      = \&Math::Complex_C::Long::sin_cl;
+*tan_cl      = \&Math::Complex_C::Long::tan_cl;
+*acosh_cl    = \&Math::Complex_C::Long::acosh_cl;
+*asinh_cl    = \&Math::Complex_C::Long::asinh_cl;
+*atanh_cl    = \&Math::Complex_C::Long::atanh_cl;
+*cosh_cl     = \&Math::Complex_C::Long::cosh_cl;
+*sinh_cl     = \&Math::Complex_C::Long::sinh_cl;
+*tanh_cl     = \&Math::Complex_C::Long::tanh_cl;
+*exp_cl      = \&Math::Complex_C::Long::exp_cl;
+*log_cl      = \&Math::Complex_C::Long::log_cl;
+*sqrt_cl     = \&Math::Complex_C::Long::sqrt_cl;
+*proj_cl     = \&Math::Complex_C::Long::proj_cl;
+*pow_cl      = \&Math::Complex_C::Long::pow_cl;
+*get_nanl    = \&Math::Complex_C::Long::get_nanl;
+*get_infl    = \&Math::Complex_C::Long::get_infl;
+*is_nanl     = \&Math::Complex_C::Long::is_nanl;
+*is_infl     = \&Math::Complex_C::Long::is_infl;
+*ld_to_str   = \&Math::Complex_C::Long::ld_to_str;
+*ld_to_strp  = \&Math::Complex_C::Long::ld_to_strp;
+*long_get_prec = \&Math::Complex_C::Long::long_get_prec;
+*long_set_prec = \&Math::Complex_C::Long::long_set_prec;
 
 sub dl_load_flags {0} # Prevent DynaLoader from complaining and croaking
 
 sub _overload_string {
-     return "(" . real_c($_[0]) . " " . imag_c($_[0]) . ")";
+    my($real, $imag) = (real_c($_[0]), imag_c($_[0]));
+    my($r, $i) = d_to_str($_[0]);
+
+    if($real == 0) {
+      $r = $real =~ /^\-/ ? '-0' : '0';
+    }
+    elsif($real != $real) {
+      $r = 'NaN';
+    }
+    elsif(($real / $real) != ($real / $real)) {
+      $r = $real < 0 ? '-Inf' : 'Inf';
+    }
+    else {
+      my @re = split /e/i, $r;
+      while(substr($re[0], -1, 1) eq '0' && substr($re[0], -2, 1) ne '.') {
+        chop $re[0];
+      }
+      $r = $re[0] . 'e' . $re[1];
+    }
+
+    if($imag == 0) {
+      $i = $imag =~ /^\-/ ? '-0' : '0';
+    }
+    elsif($imag != $imag) {
+      $i = 'NaN';
+    }
+    elsif(($imag / $imag) != ($imag / $imag)) {
+      $i = $imag < 0 ? '-Inf' : 'Inf';
+    }
+    else {
+      my @im = split /e/i, $i;
+      while(substr($im[0], -1, 1) eq '0' && substr($im[0], -2, 1) ne '.') {
+        chop $im[0];
+      }
+      $i = $im[0] . 'e' . $im[1];
+    }
+
+    return "(" . $r . " " . $i . ")";
 }
 
 sub new {
@@ -216,6 +265,10 @@ Math::Complex_C - perl interface to C's complex.h functions.
     value. Integer values (IV/UV) will be converted to floating point (NV)
     before being assigned.
 
+   LD2cl($ropl, $r_ld, $i_ld); #$r_ld & $i_ld are Math::LongDouble objects
+    Assign the real and imaginary part of $ropl from the Math::LongDouble
+    objects $r_ld and $i_ld (respectively).
+
    mul_c($rop, $op1, $op2);
    mul_c_iv($rop, $op1, $si);
    mul_c_uv($rop, $op1, $ui);
@@ -268,6 +321,11 @@ Math::Complex_C - perl interface to C's complex.h functions.
    $nv = imag_cl($op);
     Returns the (floating point) value of the imaginary component of $op.
     Wraps C's 'cimag/cimagl' function.
+
+   real_cl2LD($ld, $opl); # $ld is a Math::LongDouble object
+   imag_cl2LD($ld, $opl); # $ld is a Math::LongDouble object
+    Set the Math::LongDouble object $ld to the value of $opl's real/imag
+    value (using creall and cimagl to obtain $opl's real and imag values.
 
    $nv = arg_c($op);
    $nv = arg_cl($op);
@@ -394,6 +452,37 @@ Math::Complex_C - perl interface to C's complex.h functions.
     Therefore, if we care about the sign, we need to check using this
     XSub.
 
+=head1 OUTPUT FUNCTIONS
+
+   Default precision for output of Math::Complex_C objects is 15
+   decimal digits.
+   Default precision for output of Math::Complex_C::Long objects
+   is 18 decimal digits.
+   These defaults can be altered using d_set_prec/long_set_prec
+   (see below).
+
+   d_set_prec($si);       # for Math::Complex_C objects.
+   long_set_prec($si);    # for Math::Complex_C::Long objects.
+   $si = d_get_prec();    # for Math::Complex_C objects.
+   $si = long_get_prec(); # for Math::Complex_C::Long objects.
+    Set/get the precision of output values
+
+   $str = d_to_str($op);  # for Math::Complex_C objects.
+   $str = ld_to_str($op); # for Math::Complex_C::Long objects.
+    Express the value of $op in a string of the form "(real imag)".
+    Both "real" and "imag" will be expressed in scientific 
+    notation, to the precision returned by by the relevant
+    *_get_prec() function (above). Use the relevant *_set_prec
+    function to alter this precision.
+    The representation of Infs and NaNs will be platform-dependent.
+
+   $str = d_to_strp($op, $si);  # for Math::Complex_C objects.
+   $str = ld_to_strp($op, $si); # for Math::Complex_C::Long objects.
+    As for d_to_str/ld_to_str, except that the precision setting for
+    the output value is set by the 2nd arg (which must be greater
+    than 1).
+    
+
 =head1 OPERATOR OVERLOADING
 
    Both Math::Complex_C and Math::Complex_C::Long overload the
@@ -405,9 +494,11 @@ Math::Complex_C - perl interface to C's complex.h functions.
     =, "",
     abs, exp, log, cos, sin, atan2, sqrt
 
-    Cross-class overloading is not impllemented - that is, you
+    Cross-class overloading is not implemented - that is, you
     cannot use both a Math::Complex_C::Long object and a 
     Math::Complex_C object in the same overloaded operation.
+    You can operate on these objects using only an IV, UV, NV or
+    another object of the same type. (PV values are not allowed.)
 
     Note: For the purposes of the overloaded 'not', '!' and 'bool'
     operators, a "false" Math::Complex_C object is one with real 
@@ -423,9 +514,9 @@ Math::Complex_C - perl interface to C's complex.h functions.
 
 =head1 LICENSE
 
-   This program is free software; you may redistribute it and/or 
+   This module is free software; you may redistribute it and/or 
    modify it under the same terms as Perl itself.
-   Copyright 2011 Sisyphus.
+   Copyright 2011, 2013 Sisyphus.
 
 =head1 AUTHOR
 

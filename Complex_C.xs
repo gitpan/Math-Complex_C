@@ -1,3 +1,11 @@
+
+#ifdef  __MINGW32__
+#ifndef __USE_MINGW_ANSI_STDIO
+#define __USE_MINGW_ANSI_STDIO 1
+#endif
+#endif
+
+
 #include "EXTERN.h"
 #include "perl.h"
 #include "XSUB.h"
@@ -19,6 +27,17 @@
 #  define Newxz(v,n,t) Newz(0,v,n,t)
 #endif
 
+int _MATH_COMPLEX_C_DIGITS = 15;
+
+void d_set_prec(int x) {
+    if(x < 1)croak("1st arg (precision) to ld_set_prec must be at least 1");
+    _MATH_COMPLEX_C_DIGITS = x;
+}
+
+SV * d_get_prec(void) {
+    return newSVuv(_MATH_COMPLEX_C_DIGITS);
+}
+
 int _is_nan(double x) {
     if(x == x) return 0;
     return 1;
@@ -28,27 +47,29 @@ int _is_inf(double x) {
     if(x == 0) return 0;
     if(_is_nan(x)) return 0;
     if(x / x == x / x) return 0;
+    if(x < 0) return -1;
     return 1;
 }
 
 double _get_nan(void) {
-    double _Complex c;
-    double nan, inf;
-    __real__ c = 1.0;
-    __imag__ c = 0.0;
-
-    inf = creal(c) / cimag(c);
-    nan = inf / inf;
+    double nan = 0.0 / 0.0;
     return nan;       
 }
 
-double _get_inf(void) {
-    double _Complex c;
-    double inf;
-    __real__ c = 1.0;
-    __imag__ c = 0.0;
+double _get_neg_nan(void) {
+    double nan = 0.0 / 0.0;
+    return -nan;       
+}
 
-    inf = creal(c) / cimag(c);
+double _get_inf(void) {
+    double inf;
+    inf = 1.0 / 0.0;
+    return inf;      
+}
+
+double _get_neg_inf(void) {
+    double inf;
+    inf = -1.0 / 0.0;
     return inf;      
 }
 
@@ -266,7 +287,8 @@ SV * _overload_equiv(SV * a, SV * b, SV * third) {
        return newSVuv(0);
      }
      if(sv_isobject(b)) {
-       if(strEQ(HvNAME(SvSTASH(SvRV(b))), "Math::Complex_C")) {
+       const char *h = HvNAME(SvSTASH(SvRV(b)));
+       if(strEQ(h, "Math::Complex_C")) {
          if(creal(*(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(a))))) == creal(*(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(b))))) &&
             cimag(*(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(a))))) == cimag(*(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(b))))))
               return newSVuv(1);
@@ -283,7 +305,8 @@ SV * _overload_not_equiv(SV * a, SV * b, SV * third) {
        return newSVuv(1);
      }
      if(sv_isobject(b)) {
-       if(strEQ(HvNAME(SvSTASH(SvRV(b))), "Math::Complex_C")) {
+       const char *h = HvNAME(SvSTASH(SvRV(b)));
+       if(strEQ(h, "Math::Complex_C")) {
          if(creal(*(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(a))))) == creal(*(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(b))))) &&
             cimag(*(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(a))))) == cimag(*(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(b))))))
               return newSVuv(0);
@@ -314,7 +337,8 @@ SV * _overload_pow(SV * a, SV * b, SV * third) {
        return obj_ref;
      }
      else if(sv_isobject(b)) {
-       if(strEQ(HvNAME(SvSTASH(SvRV(b))), "Math::Complex_C")) {
+       const char *h = HvNAME(SvSTASH(SvRV(b)));
+       if(strEQ(h, "Math::Complex_C")) {
          *pc = cpow(*(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(a)))), *(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(b)))));
          return obj_ref;
        }
@@ -351,7 +375,8 @@ SV * _overload_mul(SV * a, SV * b, SV * third) {
      }
 
      if(sv_isobject(b)) {
-       if(strEQ(HvNAME(SvSTASH(SvRV(b))), "Math::Complex_C")) {
+       const char *h = HvNAME(SvSTASH(SvRV(b)));
+       if(strEQ(h, "Math::Complex_C")) {
          *pc = *(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(a)))) * *(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(b))));
          return obj_ref;
        }
@@ -389,7 +414,8 @@ SV * _overload_add(SV * a, SV * b, SV * third) {
      }
 
      if(sv_isobject(b)) {
-       if(strEQ(HvNAME(SvSTASH(SvRV(b))), "Math::Complex_C")) {
+       const char *h = HvNAME(SvSTASH(SvRV(b)));
+       if(strEQ(h, "Math::Complex_C")) {
          *pc = *(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(a)))) + *(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(b))));
          return obj_ref;
        }
@@ -412,25 +438,26 @@ SV * _overload_div(SV * a, SV * b, SV * third) {
      SvREADONLY_on(obj);
 
      if(SvUOK(b)) {
-       if(SvUV(third)) *pc = SvUV(b) / *(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(a))));
+       if(third == &PL_sv_yes) *pc = SvUV(b) / *(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(a))));
        else *pc = *(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(a)))) / SvUV(b);
        return obj_ref;
      }
 
      if(SvIOK(b)) {
-       if(SvUV(third)) *pc = SvIV(b) / *(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(a))));
+       if(third == &PL_sv_yes) *pc = SvIV(b) / *(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(a))));
        else *pc = *(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(a)))) / SvIV(b);
        return obj_ref;
      }
 
      if(SvNOK(b)) {
-       if(SvUV(third)) *pc = SvNV(b) / *(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(a))));
+       if(third == &PL_sv_yes) *pc = SvNV(b) / *(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(a))));
        else *pc = *(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(a)))) / SvNV(b);
        return obj_ref;
      }
 
      if(sv_isobject(b)) {
-       if(strEQ(HvNAME(SvSTASH(SvRV(b))), "Math::Complex_C")) {
+       const char *h = HvNAME(SvSTASH(SvRV(b)));
+       if(strEQ(h, "Math::Complex_C")) {
          *pc = *(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(a)))) / *(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(b))));
          return obj_ref;
        }
@@ -453,25 +480,26 @@ SV * _overload_sub(SV * a, SV * b, SV * third) {
      SvREADONLY_on(obj);
 
      if(SvUOK(b)) {
-       if(SvUV(third)) *pc = SvUV(b) - *(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(a))));
+       if(third == &PL_sv_yes) *pc = SvUV(b) - *(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(a))));
        else *pc = *(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(a)))) - SvUV(b);
        return obj_ref;
      }
 
      if(SvIOK(b)) {
-       if(SvUV(third)) *pc = SvIV(b) - *(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(a))));
+       if(third == &PL_sv_yes) *pc = SvIV(b) - *(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(a))));
        else *pc = *(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(a)))) - SvIV(b);
        return obj_ref;
      }
 
      if(SvNOK(b)) {
-       if(SvUV(third)) *pc = SvNV(b) - *(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(a))));
+       if(third == &PL_sv_yes) *pc = SvNV(b) - *(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(a))));
        else *pc = *(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(a)))) - SvNV(b);
        return obj_ref;
      }
 
      if(sv_isobject(b)) {
-       if(strEQ(HvNAME(SvSTASH(SvRV(b))), "Math::Complex_C")) {
+       const char *h = HvNAME(SvSTASH(SvRV(b)));
+       if(strEQ(h, "Math::Complex_C")) {
          *pc = *(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(a)))) - *(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(b))));
          return obj_ref;
        }
@@ -508,7 +536,8 @@ SV * _overload_pow_eq(SV * a, SV * b, SV * third) {
        return a;
      }
      else if(sv_isobject(b)) {
-       if(strEQ(HvNAME(SvSTASH(SvRV(b))), "Math::Complex_C")) {
+       const char *h = HvNAME(SvSTASH(SvRV(b)));
+       if(strEQ(h, "Math::Complex_C")) {
        *(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(a)))) = cpow(*(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(a)))),
                                                         *(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(b)))));
          return a;
@@ -539,7 +568,8 @@ SV * _overload_mul_eq(SV * a, SV * b, SV * third) {
      }
 
      if(sv_isobject(b)) {
-       if(strEQ(HvNAME(SvSTASH(SvRV(b))), "Math::Complex_C")) {
+       const char *h = HvNAME(SvSTASH(SvRV(b)));
+       if(strEQ(h, "Math::Complex_C")) {
        *(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(a)))) *= *(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(b))));
          return a;
        }
@@ -568,7 +598,8 @@ SV * _overload_add_eq(SV * a, SV * b, SV * third) {
      }
 
      if(sv_isobject(b)) {
-       if(strEQ(HvNAME(SvSTASH(SvRV(b))), "Math::Complex_C")) {
+       const char *h = HvNAME(SvSTASH(SvRV(b)));
+       if(strEQ(h, "Math::Complex_C")) {
        *(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(a)))) += *(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(b))));
          return a;
        }
@@ -597,7 +628,8 @@ SV * _overload_div_eq(SV * a, SV * b, SV * third) {
      }
 
      if(sv_isobject(b)) {
-       if(strEQ(HvNAME(SvSTASH(SvRV(b))), "Math::Complex_C")) {
+       const char *h = HvNAME(SvSTASH(SvRV(b)));
+       if(strEQ(h, "Math::Complex_C")) {
        *(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(a)))) /= *(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(b))));
          return a;
        }
@@ -626,7 +658,8 @@ SV * _overload_sub_eq(SV * a, SV * b, SV * third) {
      }
 
      if(sv_isobject(b)) {
-       if(strEQ(HvNAME(SvSTASH(SvRV(b))), "Math::Complex_C")) {
+       const char *h = HvNAME(SvSTASH(SvRV(b)));
+       if(strEQ(h, "Math::Complex_C")) {
        *(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(a)))) -= *(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(b))));
          return a;
        }
@@ -752,8 +785,16 @@ SV * get_nan(void) {
      return newSVnv(_get_nan());
 }
 
+SV * get_neg_nan(void) {
+     return newSVnv(_get_neg_nan());
+}
+
 SV * get_inf(void) {
      return newSVnv(_get_inf());
+}
+
+SV * get_neg_inf(void) {
+     return newSVnv(_get_neg_inf());
 }
 
 SV * is_nan(SV * a) {
@@ -765,7 +806,8 @@ SV * is_inf(SV * a) {
      if(SvNV(a) == 0) return newSVuv(0);
      if(SvNV(a) != SvNV(a)) return newSVuv(0);
      if(SvNV(a) / SvNV(a) == SvNV(a) / SvNV(a)) return newSVuv(0);
-     return newSVuv(1);
+     if(SvNV(a) < 0) return newSViv(-1);
+     return newSViv(1);
 }
 
 SV * _complex_type(void) {
@@ -835,16 +877,92 @@ SV * is_neg_zero(SV * x) {
 
 /* Attempt to return -0 */
 SV * _get_neg_zero(void) {
-     double d = 0.0;
-     d *= -1.1;
+     return newSVnv(-0.0);
+} 
 
-     return newSVnv(d);
-}    
+SV * _wrap_count() {
+     return newSVuv(PL_sv_count);
+}   
 
+void d_to_str(SV * d) {
+     dXSARGS;
+     MATH_COMPLEX t;
+     char *rbuffer;
+
+     if(sv_isobject(d)) {
+       const char *h = HvNAME(SvSTASH(SvRV(d)));
+       if(strEQ(h, "Math::Complex_C")) {
+          EXTEND(SP, 2);
+          t = *(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(d))));
+
+          Newx(rbuffer, 8 + _MATH_COMPLEX_C_DIGITS, char);
+          if(rbuffer == NULL) croak("Failed to allocate memory in d_to_str()");
+
+          sprintf(rbuffer, "%.*e", _MATH_COMPLEX_C_DIGITS - 1, __real__ t);
+          ST(0) = sv_2mortal(newSVpv(rbuffer, 0));
+
+          sprintf(rbuffer, "%.*e", _MATH_COMPLEX_C_DIGITS - 1, __imag__ t);
+          ST(1) = sv_2mortal(newSVpv(rbuffer, 0));
+
+          Safefree(rbuffer);
+          XSRETURN(2);
+       }
+       else croak("d_to_str function needs a Math::Complex_C arg but was supplied with a %s arg", h);
+     }
+     else croak("Invalid argument supplied to Math::Complex_C::d_to_str function");
+}
+
+void d_to_strp(SV * d, int prec) {
+     dXSARGS;
+     MATH_COMPLEX t;
+     char *rbuffer;
+
+     if(sv_isobject(d)) {
+       const char *h = HvNAME(SvSTASH(SvRV(d)));
+       if(strEQ(h, "Math::Complex_C")) {
+          EXTEND(SP, 2);
+          t = *(INT2PTR(MATH_COMPLEX *, SvIV(SvRV(d))));
+
+          Newx(rbuffer, 8 + prec, char);
+          if(rbuffer == NULL) croak("Failed to allocate memory in d_to_strp()");
+
+          sprintf(rbuffer, "%.*e", prec - 1, __real__ t);
+          ST(0) = sv_2mortal(newSVpv(rbuffer, 0));
+
+          sprintf(rbuffer, "%.*e", prec - 1, __imag__ t);
+          ST(1) = sv_2mortal(newSVpv(rbuffer, 0));
+
+          Safefree(rbuffer);
+          XSRETURN(2);
+       }
+       else croak("d_to_strp function needs a Math::Complex_C arg but was supplied with a %s arg", h);
+     }
+     else croak("Invalid argument supplied to Math::Complex_C::d_to_strp function");
+}
 MODULE = Math::Complex_C	PACKAGE = Math::Complex_C	
 
 PROTOTYPES: DISABLE
 
+
+void
+d_set_prec (x)
+	int	x
+	PREINIT:
+	I32* temp;
+	PPCODE:
+	temp = PL_markstack_ptr++;
+	d_set_prec(x);
+	if (PL_markstack_ptr != temp) {
+          /* truly void, because dXSARGS not invoked */
+	  PL_markstack_ptr = temp;
+	  XSRETURN_EMPTY; /* return empty stack */
+        }
+        /* must have used dXSARGS; list context implied */
+	return; /* assume stack size is correct */
+
+SV *
+d_get_prec ()
+		
 
 int
 _is_nan (x)
@@ -859,7 +977,15 @@ _get_nan ()
 		
 
 double
+_get_neg_nan ()
+		
+
+double
 _get_inf ()
+		
+
+double
+_get_neg_inf ()
 		
 
 SV *
@@ -1648,7 +1774,15 @@ get_nan ()
 		
 
 SV *
+get_neg_nan ()
+		
+
+SV *
 get_inf ()
+		
+
+SV *
+get_neg_inf ()
 		
 
 SV *
@@ -1706,4 +1840,40 @@ is_neg_zero (x)
 SV *
 _get_neg_zero ()
 		
+
+SV *
+_wrap_count ()
+
+void
+d_to_str (d)
+	SV *	d
+	PREINIT:
+	I32* temp;
+	PPCODE:
+	temp = PL_markstack_ptr++;
+	d_to_str(d);
+	if (PL_markstack_ptr != temp) {
+          /* truly void, because dXSARGS not invoked */
+	  PL_markstack_ptr = temp;
+	  XSRETURN_EMPTY; /* return empty stack */
+        }
+        /* must have used dXSARGS; list context implied */
+	return; /* assume stack size is correct */
+
+void
+d_to_strp (d, prec)
+	SV *	d
+	int	prec
+	PREINIT:
+	I32* temp;
+	PPCODE:
+	temp = PL_markstack_ptr++;
+	d_to_strp(d, prec);
+	if (PL_markstack_ptr != temp) {
+          /* truly void, because dXSARGS not invoked */
+	  PL_markstack_ptr = temp;
+	  XSRETURN_EMPTY; /* return empty stack */
+        }
+        /* must have used dXSARGS; list context implied */
+	return; /* assume stack size is correct */
 
