@@ -1,3 +1,10 @@
+0.08
+ - Fix bug in t/arith.t and t/arithl.t
+ - Use float.h's DBL_DIG and LDBL_DIG to set the initial value of precision
+   for "printf".
+ - Add _DBL_DIG() and _LDBL_DIG() XSubs so that we can see the value of float.h's
+   DBL_DIG and LDBL_DIG.
+
 0.07
  - Add Math::LongDouble conversions(LD2cl, imag_cl2LD and real_cl2LD).
  - Alter the way that strEQ gets hold of HvNAME(SvSTASH(SvRV(sv))) - so that -Wall

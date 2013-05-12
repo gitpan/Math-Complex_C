@@ -1,16 +1,10 @@
-
-#ifdef  __MINGW32__
-#ifndef __USE_MINGW_ANSI_STDIO
-#define __USE_MINGW_ANSI_STDIO 1
-#endif
-#endif
-
-
 #include "EXTERN.h"
 #include "perl.h"
 #include "XSUB.h"
 
 #include <complex.h>
+#include <stdlib.h>
+#include <float.h>
 
 #define MATH_COMPLEX double _Complex
 #define MATH_COMPLEX_DOUBLE double
@@ -27,7 +21,11 @@
 #  define Newxz(v,n,t) Newz(0,v,n,t)
 #endif
 
+#ifdef DBL_DIG
+int _MATH_COMPLEX_C_DIGITS = DBL_DIG;
+#else
 int _MATH_COMPLEX_C_DIGITS = 15;
+#endif
 
 void d_set_prec(int x) {
     if(x < 1)croak("1st arg (precision) to ld_set_prec must be at least 1");
@@ -939,6 +937,16 @@ void d_to_strp(SV * d, int prec) {
      }
      else croak("Invalid argument supplied to Math::Complex_C::d_to_strp function");
 }
+
+SV * _DBL_DIG(void) {
+#ifdef DBL_DIG
+     return newSViv(DBL_DIG);
+#else
+     return 0;
+#endif
+}
+
+
 MODULE = Math::Complex_C	PACKAGE = Math::Complex_C	
 
 PROTOTYPES: DISABLE
@@ -1876,4 +1884,8 @@ d_to_strp (d, prec)
         }
         /* must have used dXSARGS; list context implied */
 	return; /* assume stack size is correct */
+
+SV *
+_DBL_DIG ()
+		
 

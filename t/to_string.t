@@ -5,8 +5,10 @@ use Math::Complex_C qw(:all);
 
 print "1..22\n";
 
+my $init_prec = Math::Complex_C::Long::_LDBL_DIG() || 18;
 
-if(long_get_prec() == 18) {print "ok 1\n"}
+
+if(long_get_prec() == $init_prec) {print "ok 1\n"}
 else {
   warn "Precision: ", long_get_prec(), "\n";
   print "not ok 1\n";

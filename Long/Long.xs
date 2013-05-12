@@ -12,6 +12,7 @@
 
 #include <complex.h>
 #include <stdlib.h>
+#include <float.h>
 
 #define MATH_COMPLEX long double _Complex
 
@@ -27,7 +28,11 @@
 #  define Newxz(v,n,t) Newz(0,v,n,t)
 #endif
 
+#ifdef LDBL_DIG
+int _MATH_COMPLEX_C_LONG_DIGITS = LDBL_DIG;
+#else
 int _MATH_COMPLEX_C_LONG_DIGITS = 18;
+#endif
 
 void long_set_prec(int x) {
     if(x < 1)croak("1st arg (precision) to ld_set_prec must be at least 1");
@@ -978,6 +983,16 @@ void ld_to_strp(SV * ld, int prec) {
      }
      else croak("Invalid argument supplied to Math::Complex_C::Long::ld_to_strp function");
 }
+
+SV * _LDBL_DIG(void) {
+#ifdef LDBL_DIG
+     return newSViv(LDBL_DIG);
+#else
+     return 0;
+#endif
+}
+
+
 
 MODULE = Math::Complex_C::Long	PACKAGE = Math::Complex_C::Long	
 
@@ -1936,4 +1951,8 @@ ld_to_strp (ld, prec)
         }
         /* must have used dXSARGS; list context implied */
 	return; /* assume stack size is correct */
+
+SV *
+_LDBL_DIG ()
+		
 

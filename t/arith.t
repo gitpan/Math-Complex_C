@@ -90,6 +90,11 @@ else {
 ##################################
 ##################################
 
+# $c2 might not be exactly as it was - so we restore it to
+# its original value.
+
+assign_c($c2, 3.0, 2.0);
+
 my $c3 = $c2 + $c1;
 $c3 = $c3 - $c1;
 
@@ -242,7 +247,7 @@ else {
 $c2 *= $c1;
 $c2 /= $c1;
 
-if($c3 == $c2) {print "ok 21\n"}
+if(approx(real_c($c3), real_c($c2), $eps) && approx(imag_c($c3), imag_c($c2), $eps)) {print "ok 21\n"}
 else {
   warn "\$c3: $c3\n";
   print "not ok 21\n";
@@ -251,7 +256,7 @@ else {
 $c2 *= 17;
 $c2 /= 17;
 
-if($c3 == $c2) {print "ok 22\n"}
+if(approx(real_c($c3), real_c($c2), $eps) && approx(imag_c($c3), imag_c($c2), $eps)) {print "ok 22\n"}
 else {
   warn "\$c3: $c3\n";
   print "not ok 22\n";
@@ -260,7 +265,7 @@ else {
 $c2 *= -18;
 $c2 /= -18;
 
-if($c3 == $c2) {print "ok 23\n"}
+if(approx(real_c($c3), real_c($c2), $eps) && approx(imag_c($c3), imag_c($c2), $eps)) {print "ok 23\n"}
 else {
   warn "\$c3: $c3\n";
   print "not ok 23\n";
@@ -269,7 +274,7 @@ else {
 $c2 *= -217.125;
 $c2 /= -217.125;
 
-if($c3 == $c2) {print "ok 24\n"}
+if(approx(real_c($c3), real_c($c2), $eps) && approx(imag_c($c3), imag_c($c2), $eps)) {print "ok 24\n"}
 else {
   warn "\$c3: $c3\n";
   print "not ok 24\n";
