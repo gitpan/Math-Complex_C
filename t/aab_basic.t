@@ -6,9 +6,9 @@ print "1..2\n";
 
 warn "\nFYI:\n  DBL_DIG = ", Math::Complex_C::_DBL_DIG(), "\n LDBL_DIG = ", Math::Complex_C::Long::_LDBL_DIG(), "\n";
 
-if($Math::Complex_C::VERSION eq '0.08') {print "ok 1\n"}
-else {print "not ok 1 $Math::Complex_C::VERSION\n"}
+if($Math::Complex_C::VERSION eq '0.09' && Math::Complex_C::_get_xs_version() eq $Math::Complex_C::VERSION) {print "ok 1\n"}
+else {print "not ok 1 $Math::Complex_C::VERSION ", Math::Complex_C::_get_xs_version(), "\n"}
 
-if($Math::Complex_C::Long::VERSION eq '0.08') {print "ok 2\n"}
-else {print "not ok 2 $Math::Complex_C::Long::VERSION\n"}
+if($Math::Complex_C::Long::VERSION eq '0.09' && Math::Complex_C::Long::_get_xs_version() eq $Math::Complex_C::Long::VERSION) {print "ok 2\n"}
+else {print "not ok 2 $Math::Complex_C::Long::VERSION ", Math::Complex_C::Long::_get_xs_version(), "\n"}
 

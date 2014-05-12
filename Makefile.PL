@@ -7,11 +7,12 @@ $defines = $] < 5.008 ? "-DOLDPERL" : "-DNEWPERL";
 
 my %options = %{
 {
-  'NAME' => 'Math::Complex_C',
-  'INC' => '',
-  'DEFINE' => $defines,
-  'LIBS' => ['-lm'],
-  'VERSION_FROM' => 'Complex_C.pm'
+  NAME => 'Math::Complex_C',
+  INC => '',
+  DEFINE => $defines,
+  LIBS => ['-lm'],
+  LICENSE  => 'perl',
+  VERSION_FROM => 'Complex_C.pm',
 }
 };
 WriteMakefile(%options);
