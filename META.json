@@ -19,21 +19,13 @@
          "inc"
       ]
    },
-   "prereqs" : {
-      "build" : {
-         "requires" : {
-            "ExtUtils::MakeMaker" : "0"
-         }
-      },
-      "configure" : {
-         "requires" : {
-            "ExtUtils::MakeMaker" : "0"
-         }
-      },
-      "runtime" : {
-         "requires" : {}
+   "release_status" : "stable",
+   "resources" : {
+      "repository" : {
+         "type" : "git",
+         "url" : "https://github.com/sisyphus/math-complex_c.git",
+         "web" : "https://github.com/sisyphus/math-complex_c"
       }
    },
-   "release_status" : "stable",
-   "version" : "0.09"
+   "version" : "0.11"
 }

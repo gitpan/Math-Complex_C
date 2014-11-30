@@ -13,6 +13,16 @@ my %options = %{
   LIBS => ['-lm'],
   LICENSE  => 'perl',
   VERSION_FROM => 'Complex_C.pm',
+  META_MERGE => {
+   'meta-spec' => { version => 2 },
+    resources => {
+      repository => {
+        type => 'git',
+        url => 'https://github.com/sisyphus/math-complex_c.git',
+        web => 'https://github.com/sisyphus/math-complex_c',
+      },
+    },
+  },
 }
 };
 WriteMakefile(%options);

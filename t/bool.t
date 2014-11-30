@@ -5,8 +5,8 @@ use Math::Complex_C qw(:all);
 
 print "1..14\n";
 
-my $true = Math::Complex_C->new(1,0);
-my $false = Math::Complex_C->new();
+my $true = MCD(1,0);
+my $false = MCD();
 
 if($true) {print "ok 1\n"}
 else {
@@ -91,9 +91,10 @@ else {
   print "not ok 13\n";
 }
 
-my $inf = get_infl();
-if(is_infl($inf)) {print "ok 14\n"}
+my $inf = get_inf();
+if(is_inf($inf)) {print "ok 14\n"}
 else {
   warn "\$inf: $inf\n";
   print "not ok 14\n";
 }
+
